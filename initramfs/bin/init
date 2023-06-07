@@ -1,0 +1,24 @@
+#!/bin/busybox sh
+
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t configfs none /config
+
+mdev -d
+
+kbootd
+if [ $? -ne 0 ]; then
+    echo "[init] kbootd failed"
+    while true; do sleep 1; done
+fi;
+
+# Boot Android
+echo "[init] Boot Android"
+
+cmdline="androidboot.verifiedbootstate=orange androidboot.slot_suffix=_a androidboot.dtbo_idx=0  androidboot.force_normal_boot=1 androidboot.serialno=i350pumpkin androidboot.hardware=mt8365 firmware_class.path=/vendor/firmware androidboot.selinux=permissive printk.devkmsg=on init=/init androidboot.boot_devices=soc/11230000.mmc buildvariant=userdebug"
+dtb="/boot/dtb.img"
+initrd="/boot/ramdisk.img"
+kernel="/boot/Image"
+
+kexec --force --no-checks --no-ifdown --no-sync \
+      --command-line="${cmdline}" --dtb="${dtb}" --initrd="${initrd}" "${kernel}"

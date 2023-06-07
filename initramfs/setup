@@ -1,0 +1,43 @@
+# directories
+dir /bin 755 1000 1000
+dir /boot 755 0 0
+dir /config 755 0 0
+dir /dev 755 0 0
+nod /dev/console 644 0 0 c 5 1
+nod /dev/loop0 644 0 0 b 7 0
+dir /etc 755 0 0
+dir /proc 755 0 0
+dir /sys 755 0 0
+
+# binaries
+file /init usr/initramfs/bin/init 755 0 0
+file /bin/busybox usr/initramfs/bin/busybox 755 0 0
+file /bin/console usr/initramfs/bin/console 755 0 0
+file /bin/kbootd usr/initramfs/bin/kbootd 755 0 0
+file /bin/kexec usr/initramfs/bin/kexec 755 0 0
+file /bin/setup_fastboot usr/initramfs/bin/setup_fastboot 755 0 0
+
+# symlinks
+slink /bin/cat busybox 777 0 0
+slink /bin/cd busybox 777 0 0
+slink /bin/chmod busybox 777 0 0
+slink /bin/dmesg busybox 777 0 0
+slink /bin/echo busybox 777 0 0
+slink /bin/fdisk busybox 777 0 0
+slink /bin/find busybox 777 0 0
+slink /bin/grep busybox 777 0 0
+slink /bin/kill busybox 777 0 0
+slink /bin/ln busybox 777 0 0
+slink /bin/ls busybox 777 0 0
+slink /bin/mdev busybox 777 0 0
+slink /bin/mkdir busybox 777 0 0
+slink /bin/mount busybox 777 0 0
+slink /bin/pgrep busybox 777 0 0
+slink /bin/pkill busybox 777 0 0
+slink /bin/ps busybox 777 0 0
+slink /bin/pwd busybox 777 0 0
+slink /bin/reboot busybox 777 0 0
+slink /bin/rm busybox 777 0 0
+slink /bin/rx busybox 777 0 0
+slink /bin/sh busybox 777 0 0
+slink /bin/sleep busybox 777 0 0

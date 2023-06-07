@@ -1,0 +1,3 @@
+[binaries]
+c = 'aarch64-linux-musl-gcc'
+strip = 'aarch64-linux-musl-strip'

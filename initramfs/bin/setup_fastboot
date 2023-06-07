@@ -1,0 +1,23 @@
+#!/bin/busybox sh
+
+# check if setup is already done
+[ -d "/dev/usb-ffs/fastboot" ] && exit 0
+
+# setup fastboot USB gadget
+mkdir /config/usb_gadget/g1
+echo 0x18D1 > /config/usb_gadget/g1/idVendor
+echo 0x4EE0 > /config/usb_gadget/g1/idProduct
+
+mkdir /config/usb_gadget/g1/strings/0x409
+echo i350pumpkin > /config/usb_gadget/g1/strings/0x409/serialnumber
+echo mediatek > /config/usb_gadget/g1/strings/0x409/manufacturer
+echo i350_pumpkin > /config/usb_gadget/g1/strings/0x409/product
+
+mkdir /config/usb_gadget/g1/functions/ffs.fastboot
+mkdir /config/usb_gadget/g1/configs/b.1
+mkdir /config/usb_gadget/g1/configs/b.1/strings/0x409
+echo fastboot > /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration
+ln -s /config/usb_gadget/g1/functions/ffs.fastboot /config/usb_gadget/g1/configs/b.1/f1
+
+mkdir -p /dev/usb-ffs/fastboot
+mount -t functionfs fastboot /dev/usb-ffs/fastboot

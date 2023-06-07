@@ -1,0 +1,7 @@
+#!/bin/busybox sh
+
+pgrep sh &> /dev/null
+if [ $? -ne 0 ]; then
+    sh
+    echo "[console] exit"
+fi

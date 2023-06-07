@@ -1,0 +1,54 @@
+name: CI
+
+on: pull_request
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        path:
+          - 'kbootd'
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run clang-format
+      uses: jidicula/clang-format-action@v4.11.0
+      with:
+        clang-format-version: '13'
+        check-path: ${{ matrix.path }}
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up environment
+        run: |
+          sudo apt update
+          sudo apt install meson
+
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+
+      - name: Download musl toolchain
+        run: |
+          mkdir toolchain
+          cd toolchain
+          wget https://musl.cc/aarch64-linux-musl-cross.tgz
+          tar zxvf aarch64-linux-musl-cross.tgz
+          echo "$PWD/aarch64-linux-musl-cross/bin" >> $GITHUB_PATH
+
+      - name: Build busybox
+        run: |
+          ./build/build_busybox.sh
+
+      - name: Build kexec
+        run: |
+          ./build/build_kexec.sh
+
+      - name: Build kbootd
+        run: |
+          ./build/build_kbootd.sh

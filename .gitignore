@@ -1,0 +1,4 @@
+initramfs/bin/busybox
+initramfs/bin/kbootd
+initramfs/bin/kexec
+k-boot-*.bin
