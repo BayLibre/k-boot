@@ -2,15 +2,15 @@
 
 K-Boot is a bootloader based on Linux kexec.
 
-There is several benefits with this kind of bootloader solution:
-- no need to duplicate/integrate drivers from Kernel
+There are several benefits with this kind of bootloader solution:
+- no need to duplicate/integrate drivers from the Kernel
 - no need to maintain another bootloader project
 - same kernel source code used between Linux and K-Boot
 - better boot/flashing performance
 - easier to extend or debug (many tools available)
 - use/contribute existing reliable projects
 
-For now K-Boot target only `arm64` hardware.
+For now K-Boot only targets `arm64` hardware.
 
 ### Setup environment
 
@@ -32,7 +32,7 @@ $ tar -xvf gcc-arm-10.3-2021.07-x86_64-aarch64-none-linux-gnu.tar.xz
 
 ### Linux requirements
 
-K-Boot doesn't manage linux project neither provide the defconfig.
+K-Boot doesn't manage the linux project nor provide the defconfig.
 
 However the user must set in the defconfig:
 ```
@@ -46,7 +46,7 @@ CONFIG_KEXEC=y
 $ ./build/build_all.sh --linux=~/src/linux --defconfig=kboot_defconfig
 ```
 
-All others build scripts can be run independently (`--help` for more infos).
+All other build scripts can be run independently (`--help` for more infos).
 
 ### Intregration with Arm Trusted Firmware (ATF)
 
