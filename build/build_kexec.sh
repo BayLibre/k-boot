@@ -19,7 +19,9 @@ function build_kexec {
 
     export CROSS_COMPILE=aarch64-linux-musl-
 
-    [[ "${clean}" == true ]] && make clean
+    if [[ "${clean}" == true ]] && [ -f Makefile ]; then
+        make clean
+    fi
 
     [ ! -f configure ] && ./bootstrap
 
