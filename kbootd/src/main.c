@@ -11,6 +11,7 @@
 #include "utils.h"
 
 #include <sys/select.h>
+#include <termios.h>
 #include <unistd.h>
 
 #define REBOOT_TO_BOOTLOADER BIT(0)
@@ -65,6 +66,21 @@ static bool prompt_stop_boot(void)
         return i > 0 ? true : false;
 }
 
+static void set_terminal_single_char_read(void)
+{
+	struct termios local_term_attributes;
+
+	if (!isatty(STDIN_FILENO))
+		return;
+	if (tcgetattr(STDIN_FILENO, &local_term_attributes))
+		return;
+
+	local_term_attributes.c_lflag &= ~(ICANON | ECHO);
+	local_term_attributes.c_cc[VMIN] = 1;
+	local_term_attributes.c_cc[VTIME] = 0;
+	tcsetattr(STDIN_FILENO, TCSANOW, &local_term_attributes);
+}
+
 static bool stop_boot(void)
 {
         bool stop;
@@ -74,6 +90,8 @@ static bool stop_boot(void)
                 log("reboot bootloader flag detected\n");
                 return stop;
         }
+
+	set_terminal_single_char_read();
 
         stop = prompt_stop_boot();
         if (stop)
