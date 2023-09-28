@@ -101,7 +101,7 @@ int main(void)
 
         ret = fastboot_init();
         if (ret == -1) {
-                log("fasboot init failed\n");
+                log("fastboot init failed\n");
                 return ret;
         }
 
