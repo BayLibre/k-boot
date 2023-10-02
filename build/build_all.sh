@@ -13,9 +13,11 @@ source "${SRC}/utils.sh"
 
 function build_all {
     local clean="$1"
-    local mode="$2"
-    local linux="$3"
-    local defconfig="$4"
+    local compress="$2"
+    local mode="$3"
+    local linux="$4"
+    local defconfig="$5"
+    local image=""
 
     build_busybox "${clean}" "${mode}"
 
@@ -23,8 +25,14 @@ function build_all {
 
     build_kbootd "${clean}" "${mode}"
 
-    build_linux "$@"
-    cp "${linux}/arch/arm64/boot/Image" "${ROOT}/k-boot-${mode}.bin"
+    build_linux "${clean}" "${mode}" "${linux}" "${defconfig}"
+
+    if [[ "${compress}" == true ]]; then
+        image="${linux}/arch/arm64/boot/Image.gz"
+    else
+        image="${linux}/arch/arm64/boot/Image"
+    fi
+    cp "${image}" "${ROOT}/k-boot-${mode}.bin"
 }
 
 function usage {
@@ -37,6 +45,7 @@ Options:
   --linux       Linux project path
   --defconfig   Linux defconfig
   --clean       (OPTIONAL) clean before build
+  --compress    (OPTIONAL) use compressed Image
   --mode        (OPTIONAL) [release|debug|factory] mode (default: release)
   --help        (OPTIONAL) display usage
 DELIM__
@@ -46,17 +55,19 @@ function main {
     local script=$(basename "$0")
     local build="${script%.*}"
     local clean=false
+    local compress=false
     local defconfig=""
     local linux=""
     local mode="release"
 
-    local opts_args="clean,defconfig:,help,linux:,mode:"
+    local opts_args="clean,compress,defconfig:,help,linux:,mode:"
     local opts=$(getopt -o '' -l "${opts_args}" -- "$@")
     eval set -- "${opts}"
 
     while true; do
         case "$1" in
             --clean) clean=true; shift ;;
+            --compress) compress=true; shift ;;
             --defconfig) defconfig="$2"; shift 2 ;;
             --linux) linux=$(find_path "$2"); shift 2 ;;
             --mode) mode="$2"; shift 2 ;;
@@ -71,7 +82,7 @@ function main {
     ! [[ " ${MODES[*]} " =~ " ${mode} " ]] && error_usage_exit "${mode} mode not supported"
 
     # build
-    build_all "${clean}" "${mode}" "${linux}" "${defconfig}"
+    build_all "${clean}" "${compress}" "${mode}" "${linux}" "${defconfig}"
 }
 
 if [ "$0" = "$BASH_SOURCE" ]; then
