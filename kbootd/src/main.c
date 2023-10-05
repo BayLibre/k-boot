@@ -68,17 +68,17 @@ static bool prompt_stop_boot(void)
 
 static void set_terminal_single_char_read(void)
 {
-	struct termios local_term_attributes;
+        struct termios local_term_attributes;
 
-	if (!isatty(STDIN_FILENO))
-		return;
-	if (tcgetattr(STDIN_FILENO, &local_term_attributes))
-		return;
+        if (!isatty(STDIN_FILENO))
+                return;
+        if (tcgetattr(STDIN_FILENO, &local_term_attributes))
+                return;
 
-	local_term_attributes.c_lflag &= ~(ICANON | ECHO);
-	local_term_attributes.c_cc[VMIN] = 1;
-	local_term_attributes.c_cc[VTIME] = 0;
-	tcsetattr(STDIN_FILENO, TCSANOW, &local_term_attributes);
+        local_term_attributes.c_lflag &= ~(ICANON | ECHO);
+        local_term_attributes.c_cc[VMIN] = 1;
+        local_term_attributes.c_cc[VTIME] = 0;
+        tcsetattr(STDIN_FILENO, TCSANOW, &local_term_attributes);
 }
 
 static bool stop_boot(void)
@@ -91,7 +91,7 @@ static bool stop_boot(void)
                 return stop;
         }
 
-	set_terminal_single_char_read();
+        set_terminal_single_char_read();
 
         stop = prompt_stop_boot();
         if (stop)
