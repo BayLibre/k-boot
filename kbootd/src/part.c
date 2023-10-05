@@ -327,7 +327,7 @@ static void gpt_convert_efi_name_to_char(char *s, void *es, int n)
 static int find_gpt_entry(int fd, const char *name, struct gpt_entry *gpt_e,
                           off_t *offset)
 {
-        struct gpt_header gpt_hdr;
+        struct gpt_header *gpt_hdr;
         char part[PARTNAME_SZ];
         char data[LBA_SIZE];
         int ret;
@@ -339,13 +339,16 @@ static int find_gpt_entry(int fd, const char *name, struct gpt_entry *gpt_e,
                 return ret;
         }
 
-        ret = kread(fd, (char *)&gpt_hdr, LBA_SIZE);
+        memset(data, '\0', LBA_SIZE);
+        ret = kread(fd, data, LBA_SIZE);
         if (ret == -1) {
                 log("read GPT header failed\n");
                 return -1;
         }
+        gpt_hdr = (struct gpt_header *)data;
 
-        for (int i = 0; i < gpt_hdr.n_parts; i++) {
+        for (int i = 0; i < gpt_hdr->n_parts; i++) {
+                memset(data, '\0', LBA_SIZE);
                 ret = kread(fd, data, LBA_SIZE);
                 if (ret == -1) {
                         log("read GPT entry failed\n");
