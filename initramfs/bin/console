@@ -1,6 +1,6 @@
 #!/bin/busybox sh
 
-pgrep sh &> /dev/null
+pgrep -x sh &> /dev/null
 if [ $? -ne 0 ]; then
     sh
     echo "[console] exit"
